@@ -1,0 +1,28 @@
+# Dokumen brief internal tidak di-commit; hanya dokumen proyek berikut
+*.md
+!README.md
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# testing
+/test-results/
+/coverage/
+
+# env (lihat .env.example)
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*

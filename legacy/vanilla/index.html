@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JejakDana — Dari Anggaran ke Dampak Nyata</title>
+  <meta name="description" content="JejakDana: website independen untuk mencari kegiatan pembangunan jalan dan trotoar Kota Medan yang didokumentasikan publikasi resmi, lengkap dengan tautan sumber.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script type="module" src="assets/js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Lewati ke konten utama</a>
+
+  <div class="independence-bar" role="note">
+    <div class="container">
+      <strong>Situs independen.</strong> JejakDana bukan situs resmi Pemerintah Kota Medan dan bukan kanal pengaduan resmi.
+    </div>
+  </div>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html" aria-label="JejakDana, beranda">
+        <img src="assets/img/favicon.svg" alt="" width="28" height="28">
+        <span>JejakDana</span>
+      </a>
+      <nav aria-label="Navigasi utama">
+        <ul class="nav">
+          <li><a href="#proyek">Katalog</a></li>
+          <li><a href="#tentang">Metodologi</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero__inner">
+        <p class="eyebrow">Studi kasus Kota Medan · Jalan &amp; Trotoar</p>
+        <h1 id="hero-title">Dari Anggaran ke Dampak Nyata</h1>
+        <p class="hero__lead">
+          Cari kegiatan pembangunan jalan dan trotoar yang disebut dalam publikasi resmi, pahami apa yang
+          sudah dan <em>belum</em> diketahui, lalu telusuri langsung ke sumber aslinya.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary btn--lg" href="#proyek">Jelajahi kegiatan</a>
+          <a class="btn btn--light btn--lg" href="#tentang">Cara kami mengumpulkan data</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="coverage" aria-labelledby="coverage-title">
+      <div class="container">
+        <h2 id="coverage-title" class="section-title">Cakupan data saat ini</h2>
+        <p class="muted" id="coverage-note">Memuat ringkasan dari dataset…</p>
+        <ul class="stats" id="coverage-stats" aria-live="polite"></ul>
+      </div>
+    </section>
+
+    <section class="mission" aria-labelledby="mission-title">
+      <div class="container mission__grid">
+        <div>
+          <h2 id="mission-title" class="section-title">Misi JejakDana</h2>
+          <p>
+            Informasi rencana pengadaan, kegiatan, dan kondisi fisik pembangunan tersebar di banyak tempat.
+            JejakDana menyatukan kegiatan yang disebut publikasi resmi ke satu katalog yang mudah dicari —
+            tanpa menambahkan angka yang tidak didukung bukti.
+          </p>
+        </div>
+        <ol class="steps">
+          <li><strong>Cari</strong> kegiatan menurut nama jalan, wilayah, atau kategori.</li>
+          <li><strong>Pahami</strong> status yang dilaporkan sumber dan tanggalnya.</li>
+          <li><strong>Telusuri</strong> tautan publikasi resmi aslinya.</li>
+          <li><strong>Kenali celah</strong> data: pagu, kontrak, progres, dan kode RUP yang belum terverifikasi.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="proyek" class="catalog" aria-labelledby="catalog-title" tabindex="-1">
+      <div class="container">
+        <h2 id="catalog-title" class="section-title">Katalog kegiatan pembangunan</h2>
+
+        <div class="notice" role="note">
+          Setiap entri adalah <strong>kegiatan yang disebut dalam publikasi resmi</strong>, bukan paket pengadaan
+          yang sudah dicocokkan dengan SiRUP. Status adalah yang <strong>dilaporkan sumber pada tanggal publikasi</strong>,
+          bukan kondisi real-time.
+        </div>
+
+        <form class="toolbar" id="filters" role="search" aria-label="Cari dan saring kegiatan">
+          <div class="field field--grow">
+            <label for="q">Cari kegiatan</label>
+            <input id="q" name="q" type="search" placeholder="Nama jalan, wilayah, atau kategori" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="kategori">Kategori</label>
+            <select id="kategori" name="kategori">
+              <option value="">Semua kategori</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="status">Status menurut sumber</label>
+            <select id="status" name="status">
+              <option value="">Semua status</option>
+            </select>
+          </div>
+          <div class="field field--action">
+            <button class="btn btn--ghost" type="reset" id="reset-filters">Reset filter</button>
+          </div>
+        </form>
+
+        <p class="result-count" id="result-count" role="status" aria-live="polite"></p>
+
+        <div id="catalog-state" class="state" hidden></div>
+        <ul class="cards" id="cards" aria-label="Daftar kegiatan"></ul>
+      </div>
+    </section>
+
+    <section id="tentang" class="methodology" aria-labelledby="method-title" tabindex="-1">
+      <div class="container">
+        <h2 id="method-title" class="section-title">Metodologi &amp; keterbatasan</h2>
+        <div class="method-grid">
+          <article>
+            <h3>Asal data</h3>
+            <p>
+              Entri dikurasi dari publikasi resmi Pemerintah Kota Medan (misalnya <code>portal.medan.go.id</code>)
+              dan Dinas SDABMBK (<code>sdabmbk.medan.go.id</code>). Setiap entri menyimpan tautan sumber, tanggal
+              publikasi, dan tanggal kurasi.
+            </p>
+            <p class="muted" id="method-asof"></p>
+          </article>
+          <article>
+            <h3>Apa arti status</h3>
+            <ul class="plain-list" id="status-legend"></ul>
+          </article>
+          <article>
+            <h3>Yang belum kami ketahui</h3>
+            <p>
+              Publikasi berita tidak membuktikan nomor paket, pagu, nilai kontrak, atau progres fisik. Kolom tersebut
+              ditampilkan sebagai <strong>Belum terverifikasi</strong> atau <strong>Belum tersedia</strong> sampai ada
+              dokumen pengadaan resmi yang cocok (nama, lokasi, instansi, tahun, dan kode paket).
+            </p>
+            <p>
+              Rencana APBD, realisasi APBD, pagu RUP, nilai kontrak, dan progres fisik adalah hal yang berbeda.
+              Satu publikasi yang menyebut dua ruas jalan tidak berarti satu kontrak.
+            </p>
+          </article>
+          <article>
+            <h3>Independensi</h3>
+            <p>
+              JejakDana adalah proyek independen untuk kompetisi Web In Action (WIA) MIA 2026. Kami tidak berafiliasi
+              dengan Pemerintah Kota Medan, bukan kanal pengaduan resmi, dan tidak menuduh penyimpangan apa pun.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>JejakDana</strong> — Dari Anggaran ke Dampak Nyata.</p>
+      <p>Situs independen, bukan situs resmi pemerintah. Informasi mengikuti publikasi sumber pada tanggalnya dan dapat berubah.</p>
+    </div>
+  </footer>
+
+  <dialog class="modal" id="detail-modal" aria-labelledby="modal-title">
+    <div class="modal__header">
+      <h2 id="modal-title" class="modal__title"></h2>
+      <button type="button" class="icon-btn" id="modal-close" aria-label="Tutup detail">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal__body" id="modal-body"></div>
+    <div class="modal__footer">
+      <a class="btn btn--ghost" id="modal-page-link" href="#">Buka sebagai halaman</a>
+      <button type="button" class="btn btn--primary" id="modal-close-2">Tutup</button>
+    </div>
+  </dialog>
+
+  <noscript>
+    <div class="container"><p class="notice notice--warn">Katalog membutuhkan JavaScript untuk memuat data kegiatan.</p></div>
+  </noscript>
+</body>
+</html>

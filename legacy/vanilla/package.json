@@ -1,0 +1,16 @@
+{
+  "name": "jejakdana",
+  "version": "0.1.0",
+  "private": true,
+  "description": "JejakDana — Dari Anggaran ke Dampak Nyata. Website independen untuk menelusuri kegiatan pembangunan jalan/trotoar Kota Medan berdasarkan publikasi resmi.",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "validate": "node scripts/validate-data.mjs projects.json",
+    "validate:fixture": "node scripts/validate-data.mjs tests/fixtures/projects.fixture.json --allow-any-host",
+    "test": "node scripts/validate-data.mjs tests/fixtures/projects.fixture.json --allow-any-host && node tests/e2e.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.48.2"
+  }
+}
