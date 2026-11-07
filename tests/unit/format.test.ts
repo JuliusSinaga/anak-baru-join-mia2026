@@ -11,11 +11,12 @@ import {
   reportedStatusLine,
   safeHttpsUrl,
   statusLabel,
+  type ProjectFilters,
 } from "@/lib/format"
 import { parseProjects } from "@/lib/parse-projects"
 
 const projects = parseProjects(realData)
-const none = { query: "", category: "", status: "" }
+const none: ProjectFilters = { query: "", category: "", status: "", year: "", budget: "" }
 
 describe("parseProjects", () => {
   it("menerima dataset asli dan fixture", () => {
@@ -50,8 +51,18 @@ describe("filterProjects", () => {
 
   it("filter kategori + status + kata kunci bekerja serentak", () => {
     expect(filterProjects(projects, { ...none, status: "selesai_menurut_sumber" })).toHaveLength(2)
-    expect(filterProjects(projects, { query: "", category: "Trotoar", status: "selesai_menurut_sumber" })).toHaveLength(0)
-    expect(filterProjects(projects, { query: "medan johor", category: "Jalan", status: "" }).map((p) => p.id)).toEqual(["speksi-kanal"])
+    expect(filterProjects(projects, { ...none, category: "Trotoar", status: "selesai_menurut_sumber" })).toHaveLength(0)
+    expect(filterProjects(projects, { ...none, query: "medan johor", category: "Jalan" }).map((p) => p.id)).toEqual(["speksi-kanal"])
+  })
+
+  it("filter tahun anggaran dan ketersediaan pagu", () => {
+    expect(filterProjects(projects, { ...none, year: "2026" })).toHaveLength(6)
+    expect(filterProjects(projects, { ...none, year: "2025" })).toHaveLength(0)
+    expect(filterProjects(projects, { ...none, budget: "belum" })).toHaveLength(6)
+    expect(filterProjects(projects, { ...none, budget: "ada" })).toHaveLength(0)
+    const withBudget = projects.map((p, i) => (i === 0 ? { ...p, budget_ceiling_idr: 1_000_000 } : p))
+    expect(filterProjects(withBudget, { ...none, budget: "ada" }).map((p) => p.id)).toEqual(["juanda"])
+    expect(filterProjects(withBudget, { ...none, budget: "belum" })).toHaveLength(5)
   })
 
   it("pencarian tidak peka aksen/spasi berlebih", () => {

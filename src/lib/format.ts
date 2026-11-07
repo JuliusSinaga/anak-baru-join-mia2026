@@ -46,13 +46,23 @@ export function fold(text: unknown): string {
     .trim()
 }
 
-export type ProjectFilters = { query: string; category: string; status: string }
+/** budget: "" = semua, "ada" = pagu terverifikasi tersedia, "belum" = pagu belum terverifikasi. */
+export type BudgetFilter = "" | "ada" | "belum"
+export const BUDGET_FILTER_LABELS: Record<Exclude<BudgetFilter, "">, string> = {
+  ada: "Pagu terverifikasi tersedia",
+  belum: "Pagu belum terverifikasi",
+}
 
-export function filterProjects(projects: Project[], { query, category, status }: ProjectFilters): Project[] {
+export type ProjectFilters = { query: string; category: string; status: string; year: string; budget: BudgetFilter }
+
+export function filterProjects(projects: Project[], { query, category, status, year, budget }: ProjectFilters): Project[] {
   const terms = fold(query).split(" ").filter(Boolean)
   return projects.filter((p) => {
     if (category && p.category !== category) return false
     if (status && p.reported_status !== status) return false
+    if (year && String(p.fiscal_year) !== year) return false
+    if (budget === "ada" && p.budget_ceiling_idr === null) return false
+    if (budget === "belum" && p.budget_ceiling_idr !== null) return false
     const haystack = fold([p.name, p.location, p.category, p.agency, p.summary].join(" "))
     return terms.every((t) => haystack.includes(t))
   })

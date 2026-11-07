@@ -164,6 +164,37 @@ await test("Filter dari URL (?q=juanda&kategori=Trotoar) diterapkan saat memuat;
   await page.closeAll()
 })
 
+await test("Filter tahun & data anggaran: terhubung ke URL, dipulihkan dari URL, dan layak disentuh di 360px", async () => {
+  const mobile = { viewport: { width: 360, height: 740 } }
+  let page = await openPage("/proyek", mobile)
+  await waitCatalog(page)
+  for (const id of ["filter-tahun", "filter-pagu"]) {
+    const box = await page.locator(`#${id}`).boundingBox()
+    assert(box.height >= 44 && box.width >= 200, `#${id} terlalu kecil di mobile (${box.width}x${box.height})`)
+    assert((await page.locator(`#${id}`).evaluate((n) => n.scrollWidth - n.clientWidth)) <= 0, `#${id} teks terpotong`)
+  }
+  await chooseSelect(page, "filter-pagu", "Pagu terverifikasi tersedia")
+  await page.waitForSelector('[data-testid="empty-state"]')
+  await page.waitForFunction(() => location.search.includes("pagu=ada"))
+  await chooseSelect(page, "filter-pagu", "Pagu belum terverifikasi")
+  await page.waitForFunction((n) => document.querySelectorAll('[data-testid="project-card"]').length === n, DATA.length)
+  const year = String(DATA[0].fiscal_year)
+  await chooseSelect(page, "filter-tahun", year)
+  await page.waitForFunction((y) => location.search.includes(`tahun=${y}`) && location.search.includes("pagu=belum"), year)
+  eq(await overflowX(page), 0, "overflow horizontal")
+  await page.closeAll()
+  page = await openPage(`/proyek?tahun=${year}&pagu=ada`, mobile)
+  await waitCatalog(page)
+  eq((await page.textContent("#filter-tahun")).trim(), year, "tahun dipulihkan dari URL")
+  eq((await page.textContent("#filter-pagu")).trim(), "Pagu terverifikasi tersedia", "pagu dipulihkan dari URL")
+  eq(await cards(page).count(), 0, "kombinasi tanpa hasil")
+  await page.closeAll()
+  page = await openPage("/proyek?tahun=1999&pagu=asing")
+  await waitCatalog(page)
+  eq(await cards(page).count(), DATA.length, "nilai asing diabaikan")
+  await page.closeAll()
+})
+
 await test("AC-04/AC-05 setiap /proyek/[slug]: URL sumber persis, aman, dan null tampil jujur", async () => {
   for (const p of DATA) {
     const page = await openPage(`/proyek/${p.id}`)
@@ -200,6 +231,15 @@ await test("Status menyertakan tanggal publikasi sumber", async () => {
   const page = await openPage("/proyek/pimpinan-gurilla")
   eq((await page.textContent('[data-testid="status-line"]')).trim(), "Selesai menurut sumber — berdasarkan publikasi 29 Juli 2026", "status")
   await page.closeAll()
+})
+
+await test("Laporan warga nonaktif tanpa Supabase: bagian tidak tampil dan API menjawab 503", async () => {
+  const page = await openPage("/proyek/juanda")
+  eq(await page.locator('[data-testid="reports"]').count(), 0, "bagian laporan")
+  eq(await page.locator('[data-testid="report-form"]').count(), 0, "form laporan")
+  await page.closeAll()
+  const res = await fetch(`${BASE}/api/laporan`, { method: "POST", body: "{}" })
+  eq(res.status, 503, "status API")
 })
 
 await test("Slug tidak dikenal → 404 dengan halaman 'tidak ditemukan'", async () => {

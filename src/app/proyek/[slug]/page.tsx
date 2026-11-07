@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { ArrowLeftIcon } from "lucide-react"
 
 import { ProjectDetail } from "@/components/project/project-detail"
+import { ProjectReports } from "@/components/project/project-reports"
 import { statusLabel } from "@/lib/format"
 import { getAllProjects, getProjectBySlug } from "@/lib/projects"
 
@@ -53,6 +54,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
       </nav>
       <h1 className="mb-5 text-[clamp(1.6rem,4vw,2.2rem)] leading-tight font-bold">{project.name}</h1>
       <ProjectDetail project={project} />
+      <ProjectReports projectId={project.id} />
       <p className="mt-6">
         <Link href="/proyek" className="inline-flex min-h-11 items-center gap-1.5 font-semibold text-primary underline-offset-4 hover:underline">
           <ArrowLeftIcon aria-hidden="true" className="size-4" /> Kembali ke katalog
